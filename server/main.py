@@ -1,25 +1,29 @@
 import json
-
 import uvicorn
 import logging
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from starlette.responses import JSONResponse
-from fastapi.exceptions import RequestValidationError
-from starlette.exceptions import HTTPException
-from fastapi.exceptions import HTTPException as FastAPIHTTPException
+from pydantic import BaseModel, validator
 
 app = FastAPI()
 logger = logging.getLogger(__name__)
 
 
-@app.exception_handler(RequestValidationError)
-async def validation_exception_handler(request, exc):
-    return JSONResponse(content={"error": "Validation error"}, status_code=400)
+class Book(BaseModel):
+    author: str
+    country: str
+    imageLink: str
+    language: str
+    link: str
+    pages: int
+    title: str
+    year: int
 
-
-@app.exception_handler(FastAPIHTTPException)
-async def http_exception_handler(request, exc):
-    return JSONResponse(content={"error": "HTTP exception"}, status_code=exc.status_code)
+    @validator('author', 'country', 'imageLink', 'language', 'link', 'pages', 'title', 'year')
+    def validate_fields(cls, field):
+        if not field:
+            raise ValueError("Todos los campos son requeridos")
+        return field
 
 
 @app.exception_handler(HTTPException)
@@ -48,6 +52,35 @@ def get_books():
     except Exception as e:
         logger.error(f"Error reading books file: {e}")
         return JSONResponse(content={"error": "Internal Server Error"}, status_code=500)
+
+
+from fastapi import Request
+
+@app.post("/books")
+def create_book(request: Request):
+    """
+    Ruta para crear un nuevo libro utilizando los datos proporcionados en el cuerpo de la solicitud.
+    """
+    try:
+        book = request.json()
+
+        # Leer la lista de libros existentes desde el archivo JSON
+        file_path = "source/books.json"
+        with open(file_path, "r") as file:
+            books = json.load(file)
+
+        # Agregar el nuevo libro a la lista
+        books.append(book)
+
+        # Guardar la lista actualizada de libros en el archivo JSON
+        with open(file_path, "w") as file:
+            json.dump(books, file, indent=4)
+
+        return JSONResponse(content=book, status_code=201)
+    except Exception as e:
+        logger.error(f"Error creating book: {e}")
+        return JSONResponse(content={"error": "Internal Server Error"}, status_code=500)
+
 
 
 if __name__ == "__main__":
