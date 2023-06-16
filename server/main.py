@@ -92,12 +92,13 @@ async def get_author_books(author: str):
         logger.error(f"Error reading books file: {e}")
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
-
 # TODO
 """
 agregar filtro por country es una ruta
 agregar filtro por language 
 agregar filtro por año so 3 rutas :)
+Falta AGREGAR DELETE, PUT y PATCH
+CUANDO TERMINES filtro, country, y año revisar si hay codigo repetido :(
 """
 
 
