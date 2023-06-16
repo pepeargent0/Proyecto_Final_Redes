@@ -1,7 +1,7 @@
 import json
-import uvicorn
 import logging
 from fastapi import FastAPI, HTTPException
+from starlette.requests import Request
 from starlette.responses import JSONResponse
 from pydantic import BaseModel, validator
 
@@ -26,62 +26,99 @@ class Book(BaseModel):
         return field
 
 
+class ResponseBook(BaseModel):
+    status: str
+    books: list | dict
+    count: int
+
+
 @app.exception_handler(HTTPException)
-async def http_exception_handler(request, exc):
+async def http_exception_handler(request: Request, exc: HTTPException):
     return JSONResponse(content={"error": "HTTP exception"}, status_code=exc.status_code)
 
 
 @app.get("/")
-def info():
+async def info():
     """
     Ruta para obtener información de la versión de la API.
     """
-    return JSONResponse(content={"version": "0.0.1"}, status_code=200)
+    return {"version": "0.0.1"}
 
 
 @app.get("/books")
-def get_books():
+async def get_books():
     """
     Ruta para obtener la lista de libros desde un archivo JSON.
     """
     file_path = "source/books.json"
     try:
         with open(file_path, "r") as file:
-            json_content = file.read()
-        return JSONResponse(content=json.loads(json_content), status_code=200)
+            books = json.load(file)
+        response = ResponseBook(
+            status="success",
+            books=books,
+            count=len(books)
+        )
+        return JSONResponse(content=response.dict(), status_code=200)
     except Exception as e:
         logger.error(f"Error reading books file: {e}")
-        return JSONResponse(content={"error": "Internal Server Error"}, status_code=500)
+        raise HTTPException(status_code=500, detail="Internal Server Error")
 
 
-from fastapi import Request
-
-@app.post("/books")
-def create_book(request: Request):
+@app.get("/books/{author}")
+async def get_author_books(author: str):
     """
-    Ruta para crear un nuevo libro utilizando los datos proporcionados en el cuerpo de la solicitud.
+    Ruta para obtener la lista de libros desde un archivo JSON.
     """
+    file_path = "source/books.json"
     try:
-        book = request.json()
-
-        # Leer la lista de libros existentes desde el archivo JSON
-        file_path = "source/books.json"
         with open(file_path, "r") as file:
             books = json.load(file)
+        """
+        mirian esto es lo mismo pero me gusta mas en 1 renglon
+        books_author = []
+        for book in books:
+            if book['author'] == author:
+                books_author.append(book)
+        """
+        books_author = [book for book in books if book['author'] == author]
+        response = ResponseBook(
+            status="success",
+            books=books_author,
+            count=len(books_author)
+        )
+        return JSONResponse(content=response.dict(), status_code=200)
+    except Exception as e:
+        logger.error(f"Error reading books file: {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
 
-        # Agregar el nuevo libro a la lista
-        books.append(book)
 
-        # Guardar la lista actualizada de libros en el archivo JSON
+# TODO
+"""
+agregar filtro por country es una ruta
+agregar filtro por language 
+agregar filtro por año so 3 rutas :)
+"""
+
+
+@app.post("/books")
+async def create_book(book: Book):
+    file_path = "source/books.json"
+    try:
+        with open(file_path, "r") as file:
+            books = json.load(file)
+    except FileNotFoundError:
+        books = []
+    books.append(book.dict())
+    try:
         with open(file_path, "w") as file:
             json.dump(books, file, indent=4)
-
-        return JSONResponse(content=book, status_code=201)
+        response = ResponseBook(
+            status="success",
+            books=book.dict(),
+            count=1
+        )
+        return JSONResponse(content=response.dict(), status_code=201)
     except Exception as e:
         logger.error(f"Error creating book: {e}")
-        return JSONResponse(content={"error": "Internal Server Error"}, status_code=500)
-
-
-
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+        raise HTTPException(status_code=500, detail="Internal Server Error")
