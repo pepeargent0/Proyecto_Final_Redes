@@ -1,6 +1,5 @@
 requests
 fastapi
 uvicorn
-pytest
 pydantic
-httpx
+schemathesis
