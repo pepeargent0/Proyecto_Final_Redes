@@ -19,7 +19,7 @@ class Book(BaseModel):
     title: str
     year: int
 
-    @validator('author', 'country', 'imageLink', 'language', 'link', 'pages', 'title', 'year')
+    @validator('*')
     def validate_fields(cls, field):
         if not field:
             raise ValueError("Todos los campos son requeridos")
@@ -37,6 +37,26 @@ async def http_exception_handler(request: Request, exc: HTTPException):
     return JSONResponse(content={"error": "HTTP exception"}, status_code=exc.status_code)
 
 
+def read_books_file():
+    file_path = "source/books.json"
+    try:
+        with open(file_path, "r") as file:
+            books = json.load(file)
+    except FileNotFoundError:
+        books = []
+    return books
+
+
+def write_books_file(books):
+    file_path = "source/books.json"
+    try:
+        with open(file_path, "w") as file:
+            json.dump(books, file, indent=4)
+    except Exception as e:
+        logger.error(f"Error writing books file: {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+
+
 @app.get("/")
 async def info():
     """
@@ -50,147 +70,101 @@ async def get_books(country: str = None, language: str = None, author: str = Non
     """
     Ruta para obtener la lista de libros desde un archivo JSON.
     """
-    file_path = "source/books.json"
-    try:
-        with open(file_path, "r") as file:
-            books = json.load(file)
-        if author:
-            books = [book for book in books if book['author'] == author]
-        if language:
-            books = [book for book in books if book['language'] == language]
-        if year:
-            books = [book for book in books if book['year'] == year]
-        if country:
-            books = [book for book in books if book['country'] == country]
-        response = ResponseBook(
-            status="success",
-            books=books,
-            count=len(books)
-        )
-        return JSONResponse(content=response.dict(), status_code=200)
-    except Exception as e:
-        logger.error(f"Error reading books file: {e}")
-        raise HTTPException(status_code=500, detail="Internal Server Error")
+    books = read_books_file()
+
+    filtered_books = [book for book in books
+                      if (not author or book['author'] == author)
+                      and (not language or book['language'] == language)
+                      and (not year or book['year'] == year)
+                      and (not country or book['country'] == country)]
+
+    response = ResponseBook(
+        status="success",
+        books=filtered_books,
+        count=len(filtered_books)
+    )
+    return JSONResponse(content=response.dict(), status_code=200)
 
 
 @app.post("/books")
 async def create_book(book: Book):
-    file_path = "source/books.json"
-    try:
-        with open(file_path, "r") as file:
-            books = json.load(file)
-    except FileNotFoundError:
-        books = []
+    books = read_books_file()
     books.append(book.dict())
-    try:
-        with open(file_path, "w") as file:
-            json.dump(books, file, indent=4)
-        response = ResponseBook(
-            status="success",
-            books=book.dict(),
-            count=1
-        )
-        return JSONResponse(content=response.dict(), status_code=201)
-    except Exception as e:
-        logger.error(f"Error creating book: {e}")
-        raise HTTPException(status_code=500, detail="Internal Server Error")
+    write_books_file(books)
+
+    response = ResponseBook(
+        status="success",
+        books=book.dict(),
+        count=1
+    )
+    return JSONResponse(content=response.dict(), status_code=201)
 
 
 @app.delete("/books")
-async def delete_book(author: str = None, year: int = None, country: str = None):
-    file_path = "source/books.json"
-    try:
-        with open(file_path, "r") as file:
-            books = json.load(file)
-    except FileNotFoundError:
-        raise HTTPException(status_code=404, detail="Books file not found")
+async def delete_book(author: str = None, year: int = None, country: str = None, title: str = None,
+                      language: str = None):
+    books = read_books_file()
 
-    filtered_books = books.copy()
+    if author is None and year is None and country is None and title is None and language is None:
+        write_books_file([])
+        response = ResponseBook(
+            status="success",
+            books=[],
+            count=0
+        )
+        return JSONResponse(content=response.dict(), status_code=200)
 
-    if author:
-        filtered_books = [book for book in filtered_books if book['author'] != author]
-    if year:
-        filtered_books = [book for book in filtered_books if book['year'] != year]
-    if country:
-        filtered_books = [book for book in filtered_books if book['country'] != country]
+    filtered_books = [book for book in books
+                      if (not author or book['author'] != author)
+                      or (not year or book['year'] != year)
+                      or (not country or book['country'] != country)
+                      or (not title or book['title'] != title)
+                      or (not language or book['language'] != language)]
 
     if len(filtered_books) == len(books):
         raise HTTPException(status_code=404, detail="No matching books found")
 
-    try:
-        with open(file_path, "w") as file:
-            json.dump(filtered_books, file, indent=4)
-        response = ResponseBook(
-            status="success",
-            books=filtered_books,
-            count=len(filtered_books)
-        )
-        return JSONResponse(content=response.dict(), status_code=200)
-    except Exception as e:
-        logger.error(f"Error deleting book(s): {e}")
-        raise HTTPException(status_code=500, detail="Internal Server Error")
+    write_books_file(filtered_books)
+
+    response = ResponseBook(
+        status="success",
+        books=filtered_books,
+        count=len(filtered_books)
+    )
+    return JSONResponse(content=response.dict(), status_code=200)
 
 
-@app.put("/books/{author}")
-async def update_book(author: str, book: Book):
-    file_path = "source/books.json"
-    try:
-        with open(file_path, "r") as file:
-            books = json.load(file)
-    except FileNotFoundError:
-        raise HTTPException(status_code=404, detail="Books file not found")
+@app.put("/books/{title}")
+async def update_book_by_title(title: str, book: Book):
+    return await update_book(title, book)
+
+
+@app.patch("/books/{title}")
+async def partial_update_book_by_title(title: str, book: Book):
+    return await update_book(title, book)
+
+
+async def update_book(title: str, book: Book):
+    books = read_books_file()
+
     updated_books = []
     found = False
     for existing_book in books:
-        if existing_book['author'] == author:
-            updated_books.append(book.dict())
-            found = True
-        else:
-            updated_books.append(existing_book)
-    if not found:
-        raise HTTPException(status_code=404, detail="Author not found")
-    try:
-        with open(file_path, "w") as file:
-            json.dump(updated_books, file, indent=4)
-        response = ResponseBook(
-            status="success",
-            books=updated_books,
-            count=len(updated_books)
-        )
-        return JSONResponse(content=response.dict(), status_code=200)
-    except Exception as e:
-        logger.error(f"Error updating book: {e}")
-        raise HTTPException(status_code=500, detail="Internal Server Error")
-
-
-@app.patch("/books/{author}")
-async def partial_update_book(author: str, book: Book):
-    file_path = "source/books.json"
-    try:
-        with open(file_path, "r") as file:
-            books = json.load(file)
-    except FileNotFoundError:
-        raise HTTPException(status_code=404, detail="Books file not found")
-    updated_books = []
-    found = False
-    for existing_book in books:
-        if existing_book['author'] == author:
+        if existing_book['title'] == title:
             updated_book = {**existing_book, **book.dict()}
             updated_books.append(updated_book)
             found = True
         else:
             updated_books.append(existing_book)
+
     if not found:
-        raise HTTPException(status_code=404, detail="Author not found")
-    try:
-        with open(file_path, "w") as file:
-            json.dump(updated_books, file, indent=4)
-        response = ResponseBook(
-            status="success",
-            books=updated_books,
-            count=len(updated_books)
-        )
-        return JSONResponse(content=response.dict(), status_code=200)
-    except Exception as e:
-        logger.error(f"Error updating book: {e}")
-        raise HTTPException(status_code=500, detail="Internal Server Error")
+        raise HTTPException(status_code=404, detail="Title not found")
+
+    write_books_file(updated_books)
+
+    response = ResponseBook(
+        status="success",
+        books=updated_books,
+        count=len(updated_books)
+    )
+    return JSONResponse(content=response.dict(), status_code=200)
