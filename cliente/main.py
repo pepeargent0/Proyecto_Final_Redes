@@ -4,7 +4,7 @@ app = Flask(__name__)
 app.secret_key = 'cuantas_hamburgesas_se_comio_D$N1'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-url_cliente = 'http://localhost:8000'
+url_cliente = 'http://10.66.288.251:8000'
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
