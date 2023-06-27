@@ -200,7 +200,6 @@ async def delete_book(author: str = None, year: int = None, country: str = None,
         raise HTTPException(status_code=404, detail="No matching books found")
 
     write_books_file(filtered_books)
-
     response = ResponseBook(
         status="success",
         books=filtered_books,
