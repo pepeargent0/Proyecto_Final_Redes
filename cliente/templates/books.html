@@ -5,7 +5,7 @@
  <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
-  <title>Delta® v.1.0.1</title>
+  <title>Cliente® v.1.0.1</title>
   <meta name="description" content="" />
   <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='assets/img/delta/logo d.png') }}" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -85,13 +85,11 @@
        <div class="col-md-3 col-sm-6 justify-content-center" style="margin-top: 10px; margin-bottom: 20px;">
         <p style="margin-bottom: 0px;">Usuario:</p>
         <p style="margin-bottom: 5px; font-size: medium; font-weight: bold;">{{user.nombre}}</p>
-        <a href="/salir" style="background: #9e9e9f; padding: 6px; border-radius: 10px; font-weight: bold; color: white; font-size: small;"><i class="fas fa-user-friends fa-flip-horizontal"></i> Cambiar Usuario</a>
         <a href="/salir" style="background: #9e9e9f; padding: 6px; border-radius: 10px; font-weight: bold; color: white; font-size: small;"><i class="fas fa-sign-out-alt fa-rotate-180"></i> Cerrar Sesión</a>
         <br />
        </div>
        <div class="col-md-3 col-sm-6 justify-content-center align-items-center">
-         <a href="/ingreso_vehiculos" style="color: #848688; font-size: medium; font-weight: bold;"><i class="fas fa-shipping-fast" style="font-size: 25px;"></i> INGRESO DE VEHICULOS</a><br>
-         <a href="/configuracion" style="color: #848688; font-size: medium; font-weight: bold;"><i class="fas fa-cogs" style="font-size: 25px;"></i> CONFIGURACIÓN</a>
+         <a href="/books" style="color: #848688; font-size: medium; font-weight: bold;"><i class="fas fa-book" style="font-size: 25px;"></i> Books</a><br>
        </div>
       </div>
      </nav>
@@ -103,27 +101,27 @@
           <div class="d-flex align-items-end row">
            <div class="col-sm-12">
             <div class="card-body" >
-             <h5 style="color: #91c84a;">VEHICULOS HABILITADOS A INGRESAR</h5>
+             <h5 style="color: #91c84a;">Listado de libros</h5>
              <table id="myTable" class="display responsive" style="width:100%">
               <thead>
                <tr>
-                <th>N° de ID</th>
-                <th>Empresa</th>
-                <th>Patente</th>
-                <th>Fecha de Salida</th>
-                <th>Hora de Salida</th>
-                <th>Lect. Forz.</th>
+                <th>Titulo</th>
+                <th>Autor</th>
+                <th>Pais</th>
+                <th>Lenguaje</th>
+                <th>Año</th>
+                <th>Link</th>
                </tr>
               </thead>
               <tbody>
-               {% for vehiculo in vehiculos %}
+               {% for libro in books %}
                <tr>
-                <td><span style="background: #848688; padding: 6px; border-radius: 10px; font-weight: bold; color: white;">{{ '{:05d}'.format(vehiculo['id']) }}</span></td>
-                <td>{{ vehiculo['empresa'] }}</td>
-                <td>{{ vehiculo['patente'] }}</td>
-                <td>{{ vehiculo['fecha_salida'] }}</td>
-                <td>{{ vehiculo['hora_salida'] }}</td>
-                <td>{% if vehiculo['lectura_forzada'] %}si{% else %}no{% endif %}</td>
+                <td>{{ libro['title'] }}</td>
+                <td>{{ libro['author'] }}</td>
+                <td>{{ libro['country'] }}</td>
+                <td>{{ libro['language'] }}</td>
+                <td>{{ libro['year'] }}</td>
+                <td>{{ libro['link'] }}</td>
                </tr>
                {% endfor %}
               </tbody>
@@ -202,11 +200,11 @@
 
       <footer class="container">
        <div class="row">
-        <div class="col-md-3">
-         <p>Desarrollado por <img src="{{ url_for('static', filename='assets/img/delta/Logo Three Soft.png')}}" alt="Logo Three Soft" style="width: 30%; margin-bottom: 30 px;" /></p>
+        <div class="col-md-6">
+         <p>Desarrollado por Ponce, Daniel y Yañez, Mirian</p>
         </div>
-        <div class="col-md-9">
-         <p>Delta®, Three Soft® Akamaru® son marcas registradas de <span style="font-weight: bold;">Argos Casilda S.A.S.</span></p>
+        <div class="col-md-6">
+         <p>Cliente® es marca registrada de <span style="font-weight: bold;">TUIA</span></p>
         </div>
        </div>
       </footer>

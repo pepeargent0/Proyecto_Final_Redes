@@ -4,7 +4,7 @@ app = Flask(__name__)
 app.secret_key = 'cuantas_hamburgesas_se_comio_D$N1'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-url_cliente = 'http://10.66.288.251:8000'
+url_cliente = 'http://10.66.228.251:8000'
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
@@ -21,17 +21,10 @@ def index():
 def books():
     books = requests.get(url_cliente+'/books').json()
     return render_template(
-        'ingreso_vehiculos.html',
-        vehiculos=books,
-        ultimo_vehiculo=None,
-        ultimo_sin_procesar=None,
-        mensaje=None,
+        'books.html',
+        books=books['books'],
         user=None
     )
-    return books
-
-    print(books.text)
-    print('miri')
 @app.route('/salir')
 def salir():
     return redirect('/')
