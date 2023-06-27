@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+
+
+<html lang="es">
+ <head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+  <title>Delta® v.1.0.1</title>
+  <meta name="description" content="" />
+  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='assets/img/delta/logo d.png') }}" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/fonts/boxicons.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/css/core.css') }}" class="template-customizer-core-css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/css/theme-default.css') }}" class="template-customizer-theme-css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/demo.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css') }}" />
+   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css">
+
+  <script src="{{ url_for('static', filename='assets/vendor/js/helpers.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/js/config.js') }}"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.2/css/jquery.dataTables.min.css" />
+  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css" />
+  <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+     <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.6.0/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/pdfmake.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/vfs_fonts.js"></script>
+  <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.print.min.js"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/libs/popper/popper.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/js/bootstrap.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/js/menu.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/libs/apex-charts/apexcharts.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
+
+  <style>
+   .dataTables_wrapper .dataTables_filter input {
+    width: 100% !important;
+    padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+    background-image: url("https://cdn.jsdelivr.net/npm/feather-icons/dist/icons/search.svg");
+    background-repeat: no-repeat;
+    background-position: right center;
+    background-size: 1.5rem;
+   }
+  </style>
+ </head>
+
+ <body>
+  <div class="layout-wrapper layout-content-navbar">
+   <div class="layout-container" style="background-color: #c9c9c9;">
+    <div class="layout-page">
+     <nav class="layout-navbar container-fluid navbar-expand-xl navbar-detached align-items-center bg-navbar-theme" style="height: auto;" id="layout-navbar">
+      <div class="row align-items-center text-align" style="margin-top: 8px;">
+       <div class="col-md-2 col-sm-6">
+        <!-- Logo -->
+        <div class="avatar">
+         <img src="{{ url_for('static', filename='assets/img/delta/Logo Delta.png') }}" alt="" />
+        </div>
+       </div>
+       <div class="col-md-4 col-sm-6 d-flex justify-content-center" style="margin-top: 15px;">
+        <p><i class="far fa-clock"></i> <span style="text-transform: capitalize;" id="fecha"></span><span style="font-weight: bold;" id="hora"></span></p>
+        <script>
+         // Obtiene la fecha y hora actual
+         var fechaActual = new Date();
+         var dia = fechaActual.toLocaleString("es", { weekday: "long" }); // Obtén el día de la semana en letras
+         var numeroDia = fechaActual.getDate(); // Obtén el número del día
+         var mes = fechaActual.toLocaleString("es", { month: "long" }); // Obtén el nombre del mes en letras
+         var anio = fechaActual.getFullYear(); // Obtén el año
+         var hora = fechaActual.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }); // Obtén la hora en formato HH:MM
+
+         // Actualiza los elementos del HTML con los valores formateados
+         document.getElementById("fecha").innerHTML = dia + ", " + numeroDia + " " + mes + " " + anio + "   " + " | " + "   ";
+         document.getElementById("hora").innerHTML = hora;
+        </script>
+       </div>
+       <div class="col-md-3 col-sm-6 justify-content-center" style="margin-top: 10px; margin-bottom: 20px;">
+        <p style="margin-bottom: 0px;">Usuario:</p>
+        <p style="margin-bottom: 5px; font-size: medium; font-weight: bold;">{{user.nombre}}</p>
+        <a href="/salir" style="background: #9e9e9f; padding: 6px; border-radius: 10px; font-weight: bold; color: white; font-size: small;"><i class="fas fa-user-friends fa-flip-horizontal"></i> Cambiar Usuario</a>
+        <a href="/salir" style="background: #9e9e9f; padding: 6px; border-radius: 10px; font-weight: bold; color: white; font-size: small;"><i class="fas fa-sign-out-alt fa-rotate-180"></i> Cerrar Sesión</a>
+        <br />
+       </div>
+       <div class="col-md-3 col-sm-6 justify-content-center align-items-center">
+         <a href="/ingreso_vehiculos" style="color: #848688; font-size: medium; font-weight: bold;"><i class="fas fa-shipping-fast" style="font-size: 25px;"></i> INGRESO DE VEHICULOS</a><br>
+         <a href="/configuracion" style="color: #848688; font-size: medium; font-weight: bold;"><i class="fas fa-cogs" style="font-size: 25px;"></i> CONFIGURACIÓN</a>
+       </div>
+      </div>
+     </nav>
+
+     <div class="content-wrapper">
+      <div class="container-xxl flex-grow-1 container-p-y">
+       <div class="row">
+        <div class="col-lg-9 order-0">
+         <div class="card">
+          <div class="d-flex align-items-end row">
+           <div class="col-sm-12">
+            <div class="card-body">
+             <h5 style="color: #91c84a;">CONFIGURACIÓN / USUARIOS</h5>
+             <table id="myTableconfig" class="display responsive" style="width:100%">
+              <thead>
+               <tr>
+                <th>Id</th>
+                <th>Nombre y Apellido</th>
+                <th>Nombre de usuario</th>
+                <th>Rol</th>
+                <th>Acciones</th>
+               </tr>
+              </thead>
+              <tbody>
+               {% for usuario in usuarios %}
+               <tr>
+                <td><span style="background: #848688; padding: 6px; border-radius: 10px; font-weight: bold; color: white;">{{ '{:05d}'.format(usuario['id']) }}</span></td>
+                <td>{{ usuario['nombre'] }}</td>
+                <td>{{ usuario['username'] }}</td>
+                <td>{{ usuario['role'] }}</td>
+                 <td>
+                  <a href="/usuario/editar/{{ usuario['id'] }}"><i class="fa fa-pen-nib"></i></a>
+                  <a href="/usuario/borrar/{{ usuario['id'] }}"><i class="fa fa-trash"></i></a>
+                  <a href="/usuario/bloquear/{{ usuario['id'] }}"><i class="fa fa-lock"></i></a>
+                </td>
+               </tr>
+               {% endfor %}
+              </tbody>
+             </table>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="col-lg-3 col-md-4 order-1">
+         <div class="row">
+          <div class="col-lg-12">
+           <div class="card">
+            <div class="card-body">
+             <h5 style="color: #91c84a;">ALERTAS</h5>
+             <div class="col-md-12">
+              {% if mensaje %}
+              <div class="alert alert-danger" role="alert">
+               {{ mensaje }}
+              </div>
+              {% endif %}
+              <p style="font-weight: bold; margin-bottom: 0px;">Patente Detectada:</p>
+              <p style="text-align: center;">
+               {% if ultimo_sin_procesar %} {{ultimo_sin_procesar['patente']}} {%else %} No se encontraron registros {%endif %}
+              </p>
+             </div>
+             <div class="col-md-12">
+              <p style="font-weight: bold; margin-bottom: 0px;">Última Patente EGRESO:</p>
+              <p style="text-align: center;">
+               {% if ultimo_vehiculo %} {{ultimo_vehiculo['patente']}} {%else %} No se encontraron registros {%endif %}
+              </p>
+             </div>
+             <div class="mb-3">
+              <button type="button" id="forzarLectura" class="btn btn-primary d-grid w-100" style="background-color: #91c84a; border: 1px solid #373435; color: #373435; font-weight: bold;">
+               Forzar Lectura
+              </button>
+              <div class="modal fade" id="forzarLecturaModal" tabindex="-1" role="dialog" aria-labelledby="forzarLecturaModalLabel" aria-hidden="true">
+               <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                 <div class="modal-header" style="background-color: #91c84a; border: 1px solid #373435; font-weight: bold;">
+                  <h5 class="modal-title" style="color: white;">Forzar Lectura</h5>
+                 </div>
+                 <div class="modal-body">
+                  <form class="mb-3" method="POST" action="/ingreso_forzado">
+                   <div class="form-group">
+                    <label for="patente">Patente</label>
+                    <input type="text" class="form-control" id="patente" name="patente" placeholder="Ingrese la patente" />
+                   </div>
+                   <div class="form-group">
+                    <label for="motivo">Motivo</label>
+                    <textarea class="form-control" id="motivo" rows="3" name="motivo" placeholder="Ingrese el motivo"></textarea>
+                   </div>
+                   <div class="mb-3">
+                    <button class="btn btn-primary d-grid w-100" type="submit" style="background-color: #91c84a; border: 1px solid #373435; color: #373435; font-weight: bold;">Ingresar</button>
+                   </div>
+                  </form>
+                 </div>
+                </div>
+               </div>
+              </div>
+             </div>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+
+      <footer class="container">
+       <div class="row">
+        <div class="col-md-3">
+         <p>Desarrollado por <img src="{{ url_for('static', filename='assets/img/delta/Logo Three Soft.png')}}" alt="Logo Three Soft" style="width: 30%; margin-bottom: 30 px;" /></p>
+        </div>
+        <div class="col-md-9">
+         <p>Delta®, Three Soft® Akamaru® son marcas registradas de <span style="font-weight: bold;">Argos Casilda S.A.S.</span></p>
+        </div>
+       </div>
+      </footer>
+      <div class="content-backdrop fade"></div>
+     </div>
+    </div>
+   </div>
+   <div class="layout-overlay layout-menu-toggle"></div>
+  </div>
+
+  <style>
+   .custom-buttons-container {
+    margin-top: 10px;
+    display: inline-flex;
+   }
+   .custom-button {
+    background: transparent;
+    border: none;
+    font-weight: bold;
+   }
+   .dataTables_length {
+    display: none;
+   }
+   #myTable_wrapper .dataTables_paginate .paginate_button {
+    display: none;
+   }
+   #myTable_wrapper .dataTables_paginate .paginate_button:nth-child(10n) {
+    display: inline-block;
+   }
+  </style>
+  <script>
+   $(document).ready(function () {
+    $("#forzarLectura").click(function () {
+     $("#patente").empty();
+     $("#motivo").empty();
+     $("#forzarLecturaModal").modal("show");
+    });
+    var table = $("#myTableconfig").DataTable({
+     language: {
+      search: "",
+      searchPlaceholder: "Buscar",
+      sProcessing: "Procesando...",
+      sLengthMenu: "Mostrar _MENU_ registros",
+      sZeroRecords: "No se encontraron resultados",
+      sEmptyTable: "Ningún dato disponible en esta tabla",
+      sInfo: "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+      sInfoEmpty: "Mostrando registros del 0 al 0 de un total de 0 registros",
+      sInfoFiltered: "(filtrado de un total de _MAX_ registros)",
+      sInfoPostFix: "",
+      sUrl: "",
+      sInfoThousands: ",",
+      sLoadingRecords: "Cargando...",
+      oPaginate: {
+       sFirst: "Primero",
+       sLast: "Último",
+       sNext: "Siguiente",
+       sPrevious: "Anterior",
+      },
+      oAria: {
+       sSortAscending: ": Activar para ordenar la columna de manera ascendente",
+       sSortDescending: ": Activar para ordenar la columna de manera descendente",
+      },
+     },
+     pageLength: 100, // Display 100 records per page
+    });
+   });
+  </script>
+ </body>
+</html>
