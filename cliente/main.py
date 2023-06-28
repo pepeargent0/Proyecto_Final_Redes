@@ -49,6 +49,14 @@ def editar(title):
     if request.method == 'POST':
         print('actualiza libro')
     else:
+        book = requests.get(url_cliente + '/books?title='+title).json()
+        book_details = book['books'][0]
+        return render_template(
+            'edit_books.html',
+            book=book_details,
+            user=None
+        )
+
         print('get libro')
 
 
