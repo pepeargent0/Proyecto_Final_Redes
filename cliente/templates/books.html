@@ -102,6 +102,9 @@
            <div class="col-sm-12">
             <div class="card-body" >
              <h5 style="color: #91c84a;">Listado de libros</h5>
+              <div class="mb-3">
+                <a href="/books/crear">Crear Libro</a>
+        </div>
              <table id="myTable" class="display responsive" style="width:100%">
               <thead>
                <tr>
@@ -126,7 +129,6 @@
                  <td>
                   <a href="/books/editar/{{ libro['title'] }}"><i class="fa fa-pen-nib"></i></a>
                   <a href="/books/borrar/{{ libro['title'] }}"><i class="fa fa-trash"></i></a>
-                  <a href="/books/bloquear/{{ libro['title'] }}"><i class="fa fa-lock"></i></a>
                 </td>
                </tr>
                {% endfor %}
