@@ -111,6 +111,7 @@
                 <th>Lenguaje</th>
                 <th>Año</th>
                 <th>Link</th>
+                <th>Acciones</th>
                </tr>
               </thead>
               <tbody>
@@ -122,6 +123,11 @@
                 <td>{{ libro['language'] }}</td>
                 <td>{{ libro['year'] }}</td>
                 <td>{{ libro['link'] }}</td>
+                 <td>
+                  <a href="/books/editar/{{ libro['title'] }}"><i class="fa fa-pen-nib"></i></a>
+                  <a href="/books/borrar/{{ libro['title'] }}"><i class="fa fa-trash"></i></a>
+                  <a href="/books/bloquear/{{ libro['title'] }}"><i class="fa fa-lock"></i></a>
+                </td>
                </tr>
                {% endfor %}
               </tbody>
