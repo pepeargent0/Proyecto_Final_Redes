@@ -31,7 +31,7 @@ def books():
     )
 
 
-@app.route('/books/borrar/<str:title>')
+@app.route('/books/borrar/<string:title>',  methods=['GET'])
 def delete(title):
     print(title)
 
@@ -44,7 +44,7 @@ def create():
         print('retorno vista crear')
 
 
-@app.route('/books/editar/<str:title>', methods=['POST', 'GET'])
+@app.route('/books/editar/<string:title>', methods=['POST', 'GET'])
 def editar(title):
     if request.method == 'POST':
         print('actualiza libro')
