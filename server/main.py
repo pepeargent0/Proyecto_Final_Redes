@@ -1,6 +1,6 @@
 import json
 import logging
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Query
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 from pydantic import BaseModel, root_validator
@@ -102,7 +102,7 @@ async def info():
 
 
 @app.get("/books")
-async def get_books(country: str = None, language: str = None, author: str = None, year: int = None):
+async def get_books( title: str = None,country: str = None, language: str = None, author: str = None, year: int = None):
     """
     Ruta para obtener la lista de libros desde un archivo JSON.
 
@@ -123,8 +123,9 @@ async def get_books(country: str = None, language: str = None, author: str = Non
                       if (not author or book['author'] == author)
                       and (not language or book['language'] == language)
                       and (not year or book['year'] == year)
-                      and (not country or book['country'] == country)]
-
+                      and (not country or book['country'] == country)
+                      and (not title or book['title'] == title)
+                      ]
     response = ResponseBook(
         status="success",
         books=filtered_books,
@@ -159,53 +160,22 @@ async def create_book(book: Book):
 
 
 @app.delete("/books")
-async def delete_book(author: str = None, year: int = None, country: str = None, title: str = None,
-                      language: str = None):
-    """
-    Ruta para eliminar libros según los parámetros proporcionados.
+async def delete_book(author: str = Query(None), year: int = Query(None), country: str = Query(None),
+                      title: str = Query(None), language: str = Query(None)):
+    # Aquí iría tu lógica para eliminar los libros según los parámetros proporcionados
 
-    Parámetros (opcionales):
-    - author (str): Autor del libro a eliminar.
-    - year (int): Año de publicación del libro a eliminar.
-    - country (str): País del autor del libro a eliminar.
-    - title (str): Título del libro a eliminar.
-    - language (str): Idioma del libro a eliminar.
+    # Ejemplo de lógica para eliminar libros
+    if not author and not year and not country and not title and not language:
+        # Si no se proporcionan parámetros, eliminar todos los libros
+        deleted_books = []  # Aquí iría la lógica para eliminar todos los libros de tu fuente de datos
+    else:
+        # Aquí iría la lógica para eliminar los libros que coincidan con los parámetros proporcionados
+        deleted_books = []  # Aquí iría la lógica para eliminar los libros según los parámetros de búsqueda
 
-    Si no se proporcionan parámetros, se eliminarán todos los libros.
+    if not deleted_books:
+        raise HTTPException(status_code=404, detail="No se encontraron libros coincidentes")
 
-    Respuesta:
-    - status (str): Estado de la respuesta ("success").
-    - books (list): Lista de libros después de eliminar los libros coincidentes.
-    - count (int): Cantidad de libros restantes después de la eliminación.
-    """
-    books = read_books_file()
-
-    if author is None and year is None and country is None and title is None and language is None:
-        write_books_file([])
-        response = ResponseBook(
-            status="success",
-            books=[],
-            count=0
-        )
-        return JSONResponse(content=response.dict(), status_code=200)
-
-    filtered_books = [book for book in books
-                      if (not author or book['author'] != author)
-                      or (not year or book['year'] != year)
-                      or (not country or book['country'] != country)
-                      or (not title or book['title'] != title)
-                      or (not language or book['language'] != language)]
-
-    if len(filtered_books) == len(books):
-        raise HTTPException(status_code=404, detail="No matching books found")
-
-    write_books_file(filtered_books)
-    response = ResponseBook(
-        status="success",
-        books=filtered_books,
-        count=len(filtered_books)
-    )
-    return JSONResponse(content=response.dict(), status_code=200)
+    return JSONResponse(content={"message": "Libros eliminados exitosamente", "deleted_books": deleted_books})
 
 
 @app.put("/books/{title}")

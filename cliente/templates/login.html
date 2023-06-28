@@ -23,7 +23,7 @@
 
 
  <body style="background-color: #c9c9c9; overflow: hidden; display: grid; grid-template-rows: 1fr auto;">
-  <div class="container-xxl" style="height: calc(100vh - 100px); overflow-y: auto;">
+  <div class="container-xxl" style="height: calc(100vh - 100px);">
    <div class="authentication-wrapper authentication-basic container-p-y">
     <div class="authentication-inner">
      <div class="card" style="padding: 20px;">
@@ -32,7 +32,6 @@
         <img src="{{ url_for('static', filename='assets/img/delta/Logo Delta.png') }}" width="65%" style="margin-left: auto; margin-right: auto;" />
        </div>
        <h4 class="mb-2">Bienvenido a <span>Cliente®</span></h4>
-       <p class="mb-4">Registrese para poder operar</p>
         {% if error_message %}
         <div class="alert alert-danger" role="alert">
          {{ error_message }}
@@ -59,7 +58,7 @@
          </div>
         </div>
         <div class="mb-3">
-         <button class="btn btn-primary d-grid w-100" type="submit" style="background-color: #91c84a; border: 1px solid #373435; color: #373435; font-weight: bold;">Ingresar</button>
+         <button class="btn btn-primary d-grid w-100" type="submit" style="background-color: #9aa8d7; border: 1px solid #373435; color: #373435; font-weight: bold;">Ingresar</button>
         </div>
        </form>
       </div>

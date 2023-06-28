@@ -5,7 +5,7 @@ app = Flask(__name__)
 app.secret_key = 'cuantas_hamburgesas_se_comio_D$N1'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-url_cliente = 'http://10.66.228.251:8000'
+url_cliente = 'http://localhost:8000'
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -33,6 +33,13 @@ def books():
 
 @app.route('/books/borrar/<string:title>',  methods=['GET'])
 def delete(title):
+    params = {'title': title}
+    response = requests.delete(url_cliente + '/books', params=params)
+    if response.status_code == 200:
+        return redirect('/books')
+    else:
+        # Mostrar el mensaje de error en caso de fallo
+        print("Error:", response.text)
     print(title)
 
 
@@ -47,7 +54,13 @@ def create():
 @app.route('/books/editar/<string:title>', methods=['POST', 'GET'])
 def editar(title):
     if request.method == 'POST':
-        print('actualiza libro')
+        updated_book_data = dict(request.form)
+        response = requests.put(url_cliente + '/books/'+title, json=updated_book_data)
+        if response.status_code == 200:
+            return redirect('/books')
+        else:
+            # Mostrar el mensaje de error en caso de fallo
+            print("Error:", response.text)
     else:
         book = requests.get(url_cliente + '/books?title='+title).json()
         book_details = book['books'][0]
@@ -56,8 +69,6 @@ def editar(title):
             book=book_details,
             user=None
         )
-
-        print('get libro')
 
 
 @app.route('/salir')

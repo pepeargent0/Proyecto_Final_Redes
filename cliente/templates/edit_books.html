@@ -102,28 +102,70 @@
            <div class="col-sm-12">
             <div class="card-body">
              <h5 style="color: #91c84a;">Editar Libro</h5>
-              <form class="mb-3" method="POST" action="/usuario/editar/{{user.id}}">
-                   <div class="form-group">
-                    <label for="Titulo">Titulo</label>
-                    <input type="text" class="form-control" id="titulo" name="titulo" placeholder="Ingrese el titulo"
-                     value="{{book.title}}"
-                    />
-                   </div>
-                   <div class="form-group">
+              <form class="mb-3" method="POST">
+                <div class="row">
+                  <div class="col-md-6">
                     <label for="autor">Autor</label>
-                    <input type="text" class="form-control" id="username" name="username" placeholder="Ingrese el username"
+                    <input type="text" class="form-control" id="autor" name="author" placeholder="Ingrese el autor"
                     value="{{book.author}}"
                     />
-                   </div>
-                   <div class="form-group">
-                    <label for="password">Pais</label>
-                    <input type="text" class="form-control" id="username" name="username" placeholder="Ingrese el password" 
+                  </div>
+                  <div class="col-md-6">
+                    <label for="title">Titulo</label>
+                    <input type="text" class="form-control" id="title" name="title" placeholder="Ingrese el titulo"
+                     value="{{book.title}}"
+                    />
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6">
+                    <label for="country">Pais</label>
+                    <input type="text" class="form-control" id="country" name="country" placeholder="Ingrese el pais"
                     value="{{book.country}}"
                     />
-                   </div>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="language">Lenguaje</label>
+                    <input type="text" class="form-control" id="language" name="language" placeholder="Ingrese el Lenguaje"
+                     value="{{book.language}}"
+                    />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12">
+                    <label for="country">Link</label>
+                    <input type="text" class="form-control" id="link" name="link" placeholder="Ingrese el link"
+                    value="{{book.link}}"
+                    />
+                  </div>
+
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6">
+                    <label for="imageLink">imageLink</label>
+                    <input type="text" class="form-control" id="imageLink" name="imageLink" placeholder="Ingrese el imageLink"
+                     value="{{book.imageLink}}"
+                    />
+                  </div>
+                  <div class="col-md-3">
+                    <label for="pages">Numero De Paginas</label>
+                    <input type="number" class="form-control" id="pages" name="pages" placeholder="Ingrese el Numero de Paginas"
+                    value="{{book.pages}}"
+                    />
+                  </div>
+                  <div class="col-md-3">
+                    <label for="year">Fecha De Creacion</label>
+                    <input type="number" class="form-control" id="year" name="year" placeholder="Ingrese el Año"
+                     value="{{book.year}}"
+                    />
+                  </div>
+                </div>
+
                 <br clear="all">
                    <div class="mb-3">
-                    <button class="btn btn-primary d-grid w-100" type="submit" style="background-color: #91c84a; border: 1px solid #373435; color: #373435; font-weight: bold;">CARGAR</button>
+                    <button class="btn btn-primary d-grid w-100" type="submit" style="background-color: #9aa8d7; border: 1px solid #373435; color: #373435; font-weight: bold;">CARGAR</button>
                    </div>
                   </form>
             </div>
