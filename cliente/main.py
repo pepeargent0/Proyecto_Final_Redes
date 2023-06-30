@@ -48,9 +48,9 @@ def delete(title):
 def create():
     if request.method == 'POST':
         data = request.form.to_dict()
-        create_book = requests.post(url_cliente + '/books', params=data)
-        print(create_book.status_code)
-        print(request.form)
+        response = requests.post(url_cliente + '/books', json=data).json()
+        if response['status'] == 'success':
+            return redirect('/books')
     else:
         return render_template(
             'edit_books.html',
