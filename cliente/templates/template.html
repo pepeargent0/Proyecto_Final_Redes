@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+
+
+<html lang="es">
+ <head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+  <title>Cliente® v.1.0.1</title>
+  <meta name="description" content="" />
+  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='assets/img/delta/logo d.png') }}" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/fonts/boxicons.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/css/core.css') }}" class="template-customizer-core-css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/css/theme-default.css') }}" class="template-customizer-theme-css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/demo.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css') }}" />
+   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css">
+
+  <script src="{{ url_for('static', filename='assets/vendor/js/helpers.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/js/config.js') }}"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.2/css/jquery.dataTables.min.css" />
+  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css" />
+  <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+     <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.6.0/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/pdfmake.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/vfs_fonts.js"></script>
+  <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.print.min.js"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/libs/popper/popper.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/js/bootstrap.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/js/menu.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/libs/apex-charts/apexcharts.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
+
+  <style>
+    .dataTables_wrapper .dataTables_filter input {
+      width: 100% !important;
+      padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+      background-image: url('https://cdn.jsdelivr.net/npm/feather-icons/dist/icons/search.svg');
+      background-repeat: no-repeat;
+      background-position: right center;
+      background-size: 1.5rem;
+    }
+  </style>
+ </head>
+
+ <body>
+  <div class="layout-wrapper layout-content-navbar">
+   <div class="layout-container" style="background-color: #c9c9c9;">
+    <div class="layout-page">
+<nav class="layout-navbar container-fluid navbar-expand-xl navbar-detached align-items-center bg-navbar-theme" style="height: auto;" id="layout-navbar">
+      <div class="row align-items-center text-align">
+       <div class="col-md-2 col-sm-6 d-flex justify-content-center" >
+        <!-- Logo -->
+        <div class="avatar">
+         <img src="{{ url_for('static', filename='assets/img/delta/Logo Delta.png') }}" alt="" style="width: 50px; height: 50px;"/>
+        </div>
+       </div>
+       <div class="col-md-4 col-sm-6 d-flex justify-content-center" style="margin-top: 15px;">
+        <p><i class="far fa-clock"></i> <span style="text-transform: capitalize;" id="fecha"></span><span style="font-weight: bold;" id="hora"></span></p>
+        <script>
+         // Obtiene la fecha y hora actual
+         var fechaActual = new Date();
+         var dia = fechaActual.toLocaleString("es", { weekday: "long" }); // Obtén el día de la semana en letras
+         var numeroDia = fechaActual.getDate(); // Obtén el número del día
+         var mes = fechaActual.toLocaleString("es", { month: "long" }); // Obtén el nombre del mes en letras
+         var anio = fechaActual.getFullYear(); // Obtén el año
+         var hora = fechaActual.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }); // Obtén la hora en formato HH:MM
+
+         // Actualiza los elementos del HTML con los valores formateados
+         document.getElementById("fecha").innerHTML = dia + ", " + numeroDia + " " + mes + " " + anio + "   " + " | " + "   ";
+         document.getElementById("hora").innerHTML = hora;
+        </script>
+       </div>
+       <div class="col-md-3 col-sm-6 justify-content-center" style="margin-top: 10px; margin-bottom: 20px;">
+        <p style="margin-bottom: 0px;">Usuario:</p>
+        <p style="margin-bottom: 5px; font-size: medium; font-weight: bold;">Admin</p>
+        <a href="/salir" style="background: #9e9e9f; padding: 6px; border-radius: 10px; font-weight: bold; color: white; font-size: small;"><i class="fas fa-sign-out-alt fa-rotate-180"></i> Cerrar Sesión</a>
+        <br />
+       </div>
+       <div class="col-md-3 col-sm-6 justify-content-center align-items-center">
+         <a href="/books" style="color: #848688; font-size: medium; font-weight: bold;"><i class="fas fa-book" style="font-size: 25px;"></i> Books</a><br>
+       </div>
+      </div>
+     </nav>
+     <div class="content-wrapper">
+      {% block content %}{% endblock %}
+      <footer class="container">
+       <div class="row">
+        <div class="col-md-6">
+         <p>Desarrollado por <span style="font-weight: bold;">Ponce, Daniel</span> y <span style="font-weight: bold;">Yañez, Mirian</span></p>
+        </div>
+        <div class="col-md-6">
+         <p>Cliente® es marca registrada de <span style="font-weight: bold;">TUIA</span></p>
+        </div>
+       </div>
+      </footer>
+      <div class="content-backdrop fade"></div>
+     </div>
+    </div>
+   </div>
+   <div class="layout-overlay layout-menu-toggle"></div>
+  </div>
+
+  <style>
+   .custom-buttons-container {
+    margin-top: 10px;
+    display: inline-flex;
+   }
+   .custom-button {
+    background: transparent;
+    border: none;
+    font-weight: bold;
+     text-align: inherit;
+   }
+
+   @media (max-width: 768px) {
+    .custom-buttons-container {
+      flex-direction: column; /* Cambia la dirección de los botones a vertical */
+      align-items: stretch; /* Ajusta el tamaño de los botones al ancho completo */
+    }
+
+    .custom-button {
+      margin-bottom: 5px; /* Espacio más pequeño entre los botones */
+    }
+  }
+
+
+   .dataTables_length {
+    display: none;
+   }
+   #myTable_wrapper .dataTables_paginate .paginate_button {
+    display: none;
+   }
+   #myTable_wrapper .dataTables_paginate .paginate_button:nth-child(10n) {
+    display: inline-block;
+   }
+  </style>
+  <script>
+   $(document).ready(function () {
+    $("#forzarLectura").click(function () {
+     $("#patente").empty();
+     $("#motivo").empty();
+     $("#forzarLecturaModal").modal("show");
+    });
+    var table = $("#myTable").DataTable({
+      responsive: true,
+      ordering: false,
+      language: {
+            search: '',
+          searchPlaceholder: 'Buscar',
+      "sProcessing": "Procesando...",
+      "sLengthMenu": "Mostrar _MENU_ registros",
+      "sZeroRecords": "No se encontraron resultados",
+      "sEmptyTable": "Ningún dato disponible en esta tabla",
+      "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+      "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+      "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+      "sInfoPostFix": "",
+      "sUrl": "",
+      "sInfoThousands": ",",
+      "sLoadingRecords": "Cargando...",
+      "oPaginate": {
+        "sFirst": "Primero",
+        "sLast": "Último",
+        "sNext": "Siguiente",
+        "sPrevious": "Anterior"
+      },
+      "oAria": {
+        "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+        "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+      }
+    },
+      buttons: [
+      {
+       extend: "excel",
+       className: "custom-button",
+       text: "Excel",
+      },
+      {
+       extend: "pdf",
+       className: "custom-button",
+       text: "PDF",
+      },
+      {
+       extend: "print",
+       className: "custom-button",
+       text: "Imprimir",
+      },
+     ],
+     pageLength: 100, // Display 100 records per page
+    });
+    $(".custom-buttons-container").appendTo($("#myTable_wrapper"));
+    $("#excelButton").click(function () {
+     table.button(".buttons-excel").trigger();
+    });
+    $("#pdfButton").click(function () {
+     table.button(".buttons-pdf").trigger();
+    });
+    $("#printButton").click(function () {
+     table.button(".buttons-print").trigger();
+    });
+   });
+  </script>
+ </body>
+</html>
