@@ -1,12 +1,12 @@
 import json
 import logging
 
+import requests
 import uvicorn
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel, root_validator
 from starlette.requests import Request
 from starlette.responses import JSONResponse
-from pydantic import BaseModel, root_validator
-import  requests
 
 app = FastAPI()
 logger = logging.getLogger(__name__)
@@ -129,7 +129,7 @@ async def info():
 
 
 @app.get("/books")
-async def get_books( title: str = None,country: str = None, language: str = None, author: str = None, year: int = None):
+async def get_books(title: str = None, country: str = None, language: str = None, author: str = None, year: int = None):
     """
     Ruta para obtener la lista de libros desde un archivo JSON.
 
@@ -213,7 +213,6 @@ async def delete_book(author: str = '', year: int = None, country: str = '',
     return JSONResponse(content={"message": "Libros eliminados exitosamente", "deleted_books": filtered_books})
 
 
-
 @app.put("/books/{title}")
 @app.patch("/books/{title}")
 async def update_book_by_title(title: str, book: Book):
@@ -253,6 +252,7 @@ async def update_book_by_title(title: str, book: Book):
         count=len(updated_books)
     )
     return JSONResponse(content=response.dict(), status_code=200)
+
 
 @app.on_event("startup")
 async def startup_event():
