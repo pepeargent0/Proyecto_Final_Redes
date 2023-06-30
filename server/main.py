@@ -162,22 +162,31 @@ async def create_book(book: Book):
 
 
 @app.delete("/books")
-async def delete_book(author: str = Query(None), year: int = Query(None), country: str = Query(None),
-                      title: str = Query(None), language: str = Query(None)):
-    # Aquí iría tu lógica para eliminar los libros según los parámetros proporcionados
+async def delete_book(author: str = '', year: int = None, country: str = '',
+                      title: str = '', language: str = ''):
+    # Leer los libros existentes desde el archivo JSON
+    books = read_books_file()
 
-    # Ejemplo de lógica para eliminar libros
-    if not author and not year and not country and not title and not language:
-        # Si no se proporcionan parámetros, eliminar todos los libros
-        deleted_books = []  # Aquí iría la lógica para eliminar todos los libros de tu fuente de datos
-    else:
-        # Aquí iría la lógica para eliminar los libros que coincidan con los parámetros proporcionados
-        deleted_books = []  # Aquí iría la lógica para eliminar los libros según los parámetros de búsqueda
+    # Filtrar los libros que coincidan con los parámetros proporcionados
+    filtered_books = [book for book in books
+                      if (not author or book['author'] == author)
+                      and (not year or book['year'] == year)
+                      and (not country or book['country'] == country)
+                      and (not title or book['title'] == title)
+                      and (not language or book['language'] == language)]
 
-    if not deleted_books:
+    if not filtered_books:
         raise HTTPException(status_code=404, detail="No se encontraron libros coincidentes")
 
-    return JSONResponse(content={"message": "Libros eliminados exitosamente", "deleted_books": deleted_books})
+    # Eliminar los libros filtrados de la lista de libros
+    for book in filtered_books:
+        books.remove(book)
+
+    # Escribir la lista de libros actualizada en el archivo JSON
+    write_books_file(books)
+
+    return JSONResponse(content={"message": "Libros eliminados exitosamente", "deleted_books": filtered_books})
+
 
 
 @app.put("/books/{title}")
