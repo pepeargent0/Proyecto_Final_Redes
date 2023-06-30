@@ -41,7 +41,6 @@ def delete(title):
     else:
         # Mostrar el mensaje de error en caso de fallo
         print("Error:", response.text)
-    print(title)
 
 
 @app.route('/books/crear', methods=['POST', 'GET'])

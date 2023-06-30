@@ -6,6 +6,7 @@ from fastapi import FastAPI, HTTPException, Query
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 from pydantic import BaseModel, root_validator
+import  requests
 
 app = FastAPI()
 logger = logging.getLogger(__name__)
@@ -41,6 +42,30 @@ class ResponseBook(BaseModel):
     status: str
     books: list | dict
     count: int
+
+
+def download_books_file(url):
+    """
+    Descarga el archivo JSON de libros desde la URL proporcionada.
+    """
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        books = response.json()
+    except requests.exceptions.RequestException as e:
+        error_message = f"Error al descargar el archivo de libros: {e}"
+        logger.error(error_message)
+        raise HTTPException(status_code=500, detail=error_message)
+    except json.JSONDecodeError as e:
+        error_message = f"Error al analizar el archivo JSON de libros: {e}"
+        logger.error(error_message)
+        raise HTTPException(status_code=500, detail=error_message)
+    except Exception as e:
+        error_message = f"Error inesperado al descargar el archivo de libros: {e}"
+        logger.error(error_message)
+        raise HTTPException(status_code=500, detail=error_message)
+
+    return books
 
 
 @app.exception_handler(Exception)
@@ -228,6 +253,17 @@ async def update_book_by_title(title: str, book: Book):
         count=len(updated_books)
     )
     return JSONResponse(content=response.dict(), status_code=200)
+
+@app.on_event("startup")
+async def startup_event():
+    """
+    Evento de inicio de la aplicación.
+    Descarga el archivo JSON de libros antes de iniciar el servidor.
+    """
+    url = "https://raw.githubusercontent.com/benoitvallon/100-best-books/master/books.json"
+    books = download_books_file(url)
+    write_books_file(books)
+
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
