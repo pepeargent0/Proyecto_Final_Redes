@@ -31,6 +31,7 @@ def books():
     )
 
 
+
 @app.route('/books/borrar/<string:title>',  methods=['GET'])
 def delete(title):
     params = {'title': title}
@@ -46,9 +47,16 @@ def delete(title):
 @app.route('/books/crear', methods=['POST', 'GET'])
 def create():
     if request.method == 'POST':
+        data = request.form.to_dict()
+        create_book = requests.post(url_cliente + '/books', params=data)
+        print(create_book.status_code)
         print(request.form)
     else:
-        print('retorno vista crear')
+        return render_template(
+            'edit_books.html',
+            book=None,
+            user=None
+        )
 
 
 @app.route('/books/editar/<string:title>', methods=['POST', 'GET'])
