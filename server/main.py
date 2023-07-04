@@ -98,8 +98,8 @@ def read_books_file():
         error_message = f"Error inesperado al leer el archivo de libros: {e}"
         logger.error(error_message)
         raise HTTPException(status_code=500, detail=error_message)
-
     return books
+
 
 
 def write_books_file(books):

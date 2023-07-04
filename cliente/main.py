@@ -5,7 +5,7 @@ import requests
 app = Flask(__name__)
 app.secret_key = 'cuantas_hamburguesas_se_comio_D$N1'
 
-url_cliente = 'http://localhost:8000'
+url_server = 'http://localhost:8000'
 
 # Configurar el registro de eventos
 logging.basicConfig(level=logging.ERROR)
@@ -39,7 +39,7 @@ def books():
     Si ocurre un error al obtener los libros, se muestra un mensaje de error.
     """
     try:
-        response = requests.get(url_cliente + '/books')
+        response = requests.get(url_server + '/books')
         response.raise_for_status()
         books = response.json().get('books', [])
         return render_template('books.html', books=books, user=None)
@@ -59,7 +59,7 @@ def delete(title):
     Si ocurre un error durante el proceso de eliminación, se muestra un mensaje de error.
     """
     try:
-        response = requests.delete(url_cliente + '/books', params={'title': title})
+        response = requests.delete(url_server + '/books', params={'title': title})
         response.raise_for_status()
         return redirect('/books')
     except requests.exceptions.RequestException as e:
@@ -79,7 +79,7 @@ def create():
     if request.method == 'POST':
         try:
             data = request.form.to_dict()
-            response = requests.post(url_cliente + '/books', json=data)
+            response = requests.post(url_server + '/books', json=data)
             response.raise_for_status()
             return redirect('/books')
         except requests.exceptions.RequestException as e:
@@ -101,7 +101,7 @@ def editar(title):
     if request.method == 'POST':
         try:
             updated_book_data = dict(request.form)
-            response = requests.put(url_cliente + '/books/'+title, json=updated_book_data)
+            response = requests.put(url_server + '/books/' + title, json=updated_book_data)
             response.raise_for_status()
             return redirect('/books')
         except requests.exceptions.RequestException as e:
@@ -110,7 +110,7 @@ def editar(title):
             return render_template('error.html', error_message=error_message)
     else:
         try:
-            response = requests.get(url_cliente + '/books', params={'title': title})
+            response = requests.get(url_server + '/books', params={'title': title})
             response.raise_for_status()
             book_details = response.json().get('books', [])[0]
             return render_template('edit_books.html', book=book_details, user=None)
