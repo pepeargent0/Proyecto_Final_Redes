@@ -82,7 +82,7 @@ def read_books_file():
     """
     Lee el archivo JSON de libros y devuelve la lista de libros.
     """
-    file_path = "source/books.json"
+    file_path = "server/source/books.json"
     try:
         with open(file_path, "r") as file:
             books = json.load(file)
@@ -106,7 +106,7 @@ def write_books_file(books):
     """
     Escribe la lista de libros en el archivo JSON.
     """
-    file_path = "source/books.json"
+    file_path = "server/source/books.json"
     try:
         with open(file_path, "w") as file:
             json.dump(books, file, indent=4)
